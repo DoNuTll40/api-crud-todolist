@@ -7,8 +7,12 @@
   },
   "servers": [
     {
-      "url": "https://api-crud-todolist.vercel.app/",
+      "url": "https://api.donut-ll40.me/",
       "description": "เซิร์ฟเวอร์หลักของ API"
+    },
+    {
+      "url": "https://api-crud-todolist.vercel.app/",
+      "description": "เซิร์ฟเวอร์ที่เอาไว้ใช้กับ axios"
     },
     {
       "url": "http://localhost:8000/",
