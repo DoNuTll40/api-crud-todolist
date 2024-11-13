@@ -1,0 +1,508 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "ToDo List API Documentation",
+    "version": "1.0.0",
+    "description": "เอกสาร API สำหรับการจัดการ ToDo List แอปพลิเคชันที่ช่วยในการจัดระเบียบงานและติดตามงานที่ต้องทำ สามารถเพิ่ม, แก้ไข, ลบ และเรียกดูรายการงานได้"
+  },
+  "servers": [
+    {
+      "url": "https://api.example.com/",
+      "description": "เซิร์ฟเวอร์หลักของ API"
+    },
+    {
+      "url": "http://localhost:8000/",
+      "description": "เซิร์ฟเวอร์ทดสอบในเครื่อง (localhost)"
+    }
+  ],
+  "tags": [
+    { "name": "Auth", "description": "Authenticate Endpoints : เพื่อให้สามารถเข้าถึงข้อมูลหรือฟังก์ชันต่างๆ ในแอปพลิเคชันได้ โดยระบบจะใช้การยืนยันตัวตนผ่าน username และ password หรือ token (เช่น JWT) เพื่อสร้างการเข้าถึงที่ปลอดภัยและจำกัดสิทธิ์การใช้งานของผู้ใช้" },
+    { "name": "User", "description": "User endpoints" },
+    { "name": "Todo", "description": "Todo endpoints" }
+  ],
+  "components": {
+    "schemas": {
+      "Todo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "c809d515-8a3a-45b5-9ec6-7bdef00077fe"
+          },
+          "title": {
+            "type": "string",
+            "example": "Finish homework"
+          },
+          "description": {
+            "type": "string",
+            "example": "Complete the math homework by tonight."
+          },
+          "completed": {
+            "type": "boolean",
+            "example": false
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-11-12T14:12:51.026Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-11-12T14:12:51.026Z"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "e1f2a7a9-3e24-48de-b83f-caf14c235b8e"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "user@example.com"
+          },
+          "username": {
+            "type": "string",
+            "example": "username1234"
+          },
+          "password": {
+            "type": "string",
+            "example": "$2a$10$RfyR1V6y2JHWH2BNXNdh/OfvFrcSq2FAEFw0n.7FcvCqbWC0m7M.K"
+          },
+          "firstname": {
+            "type": "string",
+            "example": "John"
+          },
+          "lastname": {
+            "type": "string",
+            "example": "Doe"
+          },
+          "picture": {
+            "type": "string",
+            "example": "https://ui-avatars.com/api/?name=John+Doe&background=181C14&color=fff&size=512"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-11-12T14:12:51.026Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-11-12T14:12:51.026Z"
+          },
+          "failedAttempts": {
+            "type": "integer",
+            "example": 0
+          },
+          "lockUntil": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-11-12T15:12:51.026Z"
+          }
+        }
+      },
+      "Account": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "6f580973-f742-4116-a79d-48abf4f5c803"
+          },
+          "provider": {
+            "type": "string",
+            "example": "google"
+          },
+          "providerId": {
+            "type": "string",
+            "example": "googleId-123456"
+          },
+          "user_id": {
+            "type": "string",
+            "example": "e1f2a7a9-3e24-48de-b83f-caf14c235b8e"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "Cookies": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "token"
+      }
+    }
+  },
+  "paths": {
+    "/api/v1/auth/sign-in": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "เข้าสู่ระบบ",
+        "description": "ข้อมูลที่กรอกเข้ามาจะถูกตรวจสอบความถูกต้องตามข้อกำหนดที่กำหนดไว้ เช่น รหัสผ่านต้องประกอบด้วยตัวพิมพ์ใหญ่ พิมพ์เล็ก ตัวเลข และอักขระพิเศษ โดยข้อมูลทุกฟิลด์ที่กำหนดเป็นฟิลด์บังคับจะต้องมีค่า",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "example": "user@example.com",
+                    "description": "สามารถกรอกได้ทั้ง email และ username"
+                  },
+                  "password": { 
+                    "type": "string",
+                    "format": "password",
+                    "example": "P@ssw0rd!",
+                    "description": "รหัสผ่านต้องประกอบด้วยตัวพิมพ์ใหญ่ พิมพ์เล็ก ตัวเลข และอักขระพิเศษ"
+                  }
+                },
+                "required": ["username", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "ลงชื่อเข้าใช้สำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6..."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "ลงชื่อเข้าใช้สำเร็จ / Login successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ข้อมูลไม่ถูกต้อง เช่น รหัสผ่านไม่ถูกต้อง, บัญชีของคุณถูกล็อคชั่วคราว",
+            "content": {
+              "application/json":{
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "รหัสผ่านไม่ถูกต้อง / Incorrect password"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์",
+            "content": {
+              "application/json":{
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "internal server errors"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+        "/api/v1/auth/sign-up": {
+      "post": {
+        "summary": "สมัครผู้ใช้งาน",
+        "tags": ["Auth"],
+        "description": "ข้อมูลที่กรอกเข้ามาจะถูกตรวจสอบความถูกต้องตามข้อกำหนดที่กำหนดไว้ เช่น อีเมลต้องมีรูปแบบที่ถูกต้อง, ชื่อผู้ใช้งานต้องไม่เว้นว่าง, รหัสผ่านต้องประกอบด้วยตัวพิมพ์ใหญ่ พิมพ์เล็ก ตัวเลข และอักขระพิเศษ โดยข้อมูลทุกฟิลด์ที่กำหนดเป็นฟิลด์บังคับจะต้องมีค่า",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "user@example.com" },
+                  "username": { "type": "string", "example": "username1234" },
+                  "firstname": { "type": "string", "example": "John" },
+                  "lastname": { "type": "string", "example": "Doe" },
+                  "password": { "type": "string", "format": "password", "example": "P@ssw0rd!" },
+                  "confirmPassword": { "type": "string", "example": "P@ssw0rd!" }
+                },
+                "required": ["email", "username", "firstname", "lastname", "password", "confirmPassword"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "ok" },
+                    "code": { "type": "integer", "example": 200 },
+                    "message": { "type": "string", "example": "successful!" },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "string", "format": "uuid", "example": "c0093d36-XXXX-XXXX-XXXX-f20357e9b747" },
+                        "email": { "type": "string", "format": "email", "example": "user1@example.com" },
+                        "username": { "type": "string", "example": "username1234" },
+                        "password": { "type": "string", "example": "$2a$10$RfyR1V6y2JHWH2BNXNdh/OfvFrcSq2FAEFw0n.7FcvCqbWC0m7M.K" },
+                        "firstname": { "type": "string", "example": "John" },
+                        "lastname": { "type": "string", "example": "Doe" },
+                        "picture": { "type": "string", "format": "uri", "example": "https://ui-avatars.com/api/?name=John+Doe&background=181C14&color=fff&size=512" },
+                        "createdAt": { "type": "string", "format": "date-time", "example": "2024-11-12T14:12:51.026Z" },
+                        "updatedAt": { "type": "string", "format": "date-time", "example": "2024-11-12T14:12:51.026Z" },
+                        "failedAttempts": { "type": "integer", "example": 0 },
+                        "lockUntil": { "type": "string", "format": "date-time", "nullable": true, "example": null }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ข้อมูลไม่ถูกต้อง เช่น อีเมลนี้ถูกใช้งานแล้ว หรือข้อมูลไม่ครบถ้วน",
+            "content": {
+              "application/json":{
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "อีเมลนี้ถูกใช้งานแล้ว"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์",
+            "content": {
+              "application/json":{
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "internal server errors"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/verify": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "ยืนยันการเข้าสู่ระบบ",
+        "description": "ใช้เพื่อยืนยันการเข้าสู่ระบบของผู้ใช้โดยตรวจสอบ token หรือ cookie",
+        "parameters": [],
+        "security": [
+          {
+            "BearerToken": []
+          },
+          {
+            "Cookies": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {}
+          }
+        },
+          "responses": {
+            "200": {
+            "description": "Successfully verified the user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "bea3e979-9f51-42be-8039-d687da953645"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "user@example.com"
+                    },
+                    "username": {
+                      "type": "string",
+                      "example": "username123"
+                    },
+                    "firstname": {
+                      "type": "string",
+                      "example": "John"
+                    },
+                    "lastname": {
+                      "type": "string",
+                      "example": "Doe"
+                    },
+                    "picture": {
+                      "type": "string",
+                      "example": "https://ui-avatars.com/api/?name=John+Doe&background=181C14&color=fff&size=512"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2024-11-12T14:12:13.251Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2024-11-13T02:59:22.017Z"
+                    },
+                    "failedAttempts": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "lockUntil": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json":{
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Token verification failed : invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์",
+            "content": {
+              "application/json":{
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "internal server errors"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/sign-out": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "ออกจากระบบ",
+        "description": "ใช้เพื่อยืนยันการออกจากระบบของผู้ใช้โดยการลบ token หรือ cookie ที่ใช้ในการยืนยันตัวตน",
+        "parameters": [],
+        "security": [
+          {
+            "BearerToken": []
+          },
+          {
+            "Cookies": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ออกจากระบบสำเร็จ",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "ออกจากระบบสำเร็จ"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์",
+            "content": {
+              "application/json":{
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "internal server errors"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
