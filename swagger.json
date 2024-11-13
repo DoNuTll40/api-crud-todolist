@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://api.example.com/",
+      "url": "https://api-crud-todolist.vercel.app/",
       "description": "เซิร์ฟเวอร์หลักของ API"
     },
     {
