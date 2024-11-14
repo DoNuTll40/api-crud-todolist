@@ -11,11 +11,9 @@ const { rateLimit } = require('express-rate-limit');
 api.use(express.json());
 api.use(morgan("dev"));
 api.use(cors({
-  origin: (origin, callback) => {
-    callback(null, true);
-  },
   credentials: true,
 }));
+
 api.use(cookieParser());
 
 const errorHandler = require("./src/middlewares/error");
