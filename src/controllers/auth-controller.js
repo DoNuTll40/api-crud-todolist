@@ -107,9 +107,7 @@ exports.signOut = (req, res, next) => {
     res.clearCookie("token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
-      expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
-      priority: 'high',
+      sameSite: "lax",
       path: "/",
     });
     
