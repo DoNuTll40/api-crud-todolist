@@ -93,7 +93,7 @@ exports.signIn = async (req, res, next) => {
       secure: process.env.NODE_ENV === "production", // ใช้ secure ใน production เพื่อให้ส่ง cookie ผ่าน HTTPS เท่านั้น
       sameSite: "none", // ช่วยป้องกัน CSRF
       maxAge: 2 * 60 * 60 * 1000,
-      path: "/",
+      path: '/',
     });
 
     res.json({ token, message: "ลงชื่อเข้าใช้สำเร็จ / Login successful" })
@@ -108,7 +108,7 @@ exports.signOut = (req, res, next) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "none",
-      path: "/",
+      path: '/',
     });
     
     res.json({ message: "ออกจากระบบสำเร็จ / Logout successful" });
