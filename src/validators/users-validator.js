@@ -44,17 +44,23 @@ exports.createUserSchema = Joi.object({
 
 // Joi schema สำหรับอัปเดตข้อมูลผู้ใช้
 exports.updateUserSchema = Joi.object({
-  //   username: Joi.string().optional().allow(null),
-  //   firstname: Joi.string().min(2).max(50).optional().message({
-  //     'string.min': 'ชื่อจริงต้องมีอย่างน้อย 2 ตัวอักษร',
-  //     'string.max': 'ชื่อจริงไม่ควรเกิน 50 ตัวอักษร',
-  //   }),
-  //   lastname: Joi.string().min(2).max(50).optional().message({
-  //     'string.min': 'นามสกุลต้องมีอย่างน้อย 2 ตัวอักษร',
-  //     'string.max': 'นามสกุลไม่ควรเกิน 50 ตัวอักษร',
-  //   }),
-  //   picture: Joi.string().uri().optional().allow(null).message({
-  //     'string.uri': 'รูปโปรไฟล์ต้องเป็น URL ที่ถูกต้อง',
-  //   }),
-  //   updatedAt: Joi.date().default(() => new Date(), 'current date').optional(),
+  email: Joi.string().email().required().messages({
+    "string.empty": "กรุณากรอกอีเมล / Please enter an email",
+    "string.email": "กรุณากรอกอีเมลที่ถูกต้อง / Please enter a valid email",
+    "any.required": "อีเมลเป็นฟิลด์ที่จำเป็น / Email is a required field",
+  }),
+  username: Joi.string().required().messages({
+    "string.empty": "กรุณากรอกชื่อผู้ใช้งาน / Please enter a username",
+    "any.required": "ไม่พบฟิลด์ชื่อผู้ใช้งาน / Username field is required",
+  }),
+  firstname: Joi.string().min(2).max(50).required().messages({
+    "string.min": "ชื่อจริงต้องมีอย่างน้อย 2 ตัวอักษร / First name must be at least 2 characters long",
+    "string.max": "ชื่อจริงไม่ควรเกิน 50 ตัวอักษร / First name should not exceed 50 characters",
+    "any.required": "ชื่อจริงเป็นฟิลด์ที่จำเป็น / First name is a required field",
+  }),
+  lastname: Joi.string().min(2).max(50).required().messages({
+    'string.min': 'นามสกุลต้องมีอย่างน้อย 2 ตัวอักษร / Last name must be at least 2 characters long',
+    'string.max': 'นามสกุลไม่ควรเกิน 50 ตัวอักษร / Last name should not exceed 50 characters',
+    'any.required': 'นามสกุลเป็นฟิลด์ที่จำเป็น / Last name is a required field',
+  })
 });

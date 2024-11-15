@@ -11,7 +11,10 @@ const { rateLimit } = require('express-rate-limit');
 api.use(express.json());
 api.use(morgan("dev"));
 api.use(cors({
-  credentials: true,
+  origin: (origin, callback) => {
+    callback(null, origin || '*'); // อนุญาตทุก Origin
+  },
+  credentials: true, // อนุญาต cookies หรือข้อมูลรับรอง
 }));
 
 api.use(cookieParser());
@@ -19,6 +22,8 @@ api.use(cookieParser());
 const errorHandler = require("./src/middlewares/error");
 const notFoundError = require("./src/middlewares/not-found");
 const authRoute = require("./src/routes/auth-route");
+const userRoute = require("./src/routes/user-route");
+const { authentication } = require("./src/middlewares/authentication");
 
 if (!port) {
   console.error("Error: API_PORT not defined in .env");
@@ -55,13 +60,13 @@ const router = express.Router();
 
 function allRoutes() {
   router.use("/auth", authRoute);
+  router.use("/user", authentication, userRoute);
   router.get("/limit", limiter, (req, res) => {
     const limitCount = req.rateLimit.remaining;
     const limit = req.rateLimit.limit;
     const reset = new Date(req.rateLimit.resetTime).toLocaleString('en-US');
     const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    console.log(req)
-    res.json({ success: true , ipAddress, limit, limitCount, reset });
+    return res.json({ success: true , ipAddress, limit, limitCount, reset });
   })
 }
 
