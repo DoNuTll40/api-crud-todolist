@@ -91,7 +91,7 @@ exports.signIn = async (req, res, next) => {
     res.cookie("token", token, {
       httpOnly: true, // ป้องกันการเข้าถึงโดย JavaScript ฝั่ง client
       secure: process.env.NODE_ENV === "production", // ใช้ secure ใน production เพื่อให้ส่ง cookie ผ่าน HTTPS เท่านั้น
-      sameSite: "lax", // ช่วยป้องกัน CSRF
+      sameSite: "none", // ช่วยป้องกัน CSRF
       maxAge: 2 * 60 * 60 * 1000,
       path: "/",
     });
