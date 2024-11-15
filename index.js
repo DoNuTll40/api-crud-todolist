@@ -7,6 +7,7 @@ const cors = require("cors");
 const cookieParser = require('cookie-parser')
 const { apiReference } = require('@scalar/express-api-reference');;
 const { rateLimit } = require('express-rate-limit');
+const compression = require('compression')
 
 api.use(express.json());
 api.use(morgan("dev"));
@@ -17,6 +18,7 @@ api.use(cors({
   credentials: true, // อนุญาต cookies หรือข้อมูลรับรอง
 }));
 
+api.use(compression());
 api.use(cookieParser());
 
 const errorHandler = require("./src/middlewares/error");
