@@ -25,6 +25,7 @@ const errorHandler = require("./src/middlewares/error");
 const notFoundError = require("./src/middlewares/not-found");
 const authRoute = require("./src/routes/auth-route");
 const userRoute = require("./src/routes/user-route");
+const todoRoute = require("./src/routes/todo-route");
 const { authentication } = require("./src/middlewares/authentication");
 
 if (!port) {
@@ -63,10 +64,11 @@ const router = express.Router();
 function allRoutes() {
   router.use("/auth", authRoute);
   router.use("/user", authentication, userRoute);
+  router.use("/todo", authentication, todoRoute);
   router.get("/limit", limiter, (req, res) => {
     const limitCount = req.rateLimit.remaining;
     const limit = req.rateLimit.limit;
-    const reset = new Date(req.rateLimit.resetTime).toLocaleString('en-US');
+    const reset = new Date(req.rateLimit.resetTime).toLocaleString();
     const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     return res.json({ success: true , ipAddress, limit, limitCount, reset });
   })

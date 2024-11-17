@@ -507,6 +507,159 @@
           }
         }
       }
+    },
+    "/api/v1/user/update": {
+      "patch": {
+        "tags": ["User"],
+        "summary": "อัปเดตข้อมูลผู้ใช้งาน",
+        "description": "ใช้เพื่ออัปเดตข้อมูลผู้ใช้งานที่มีอยู่ เช่น อีเมล, ชื่อผู้ใช้งาน, ชื่อจริง, และนามสกุล",
+        "operationId": "updateUser",
+        "security": [
+          {
+            "BearerToken": []
+          },
+          {
+            "Cookies": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "อีเมลของผู้ใช้งานที่ต้องการอัปเดต",
+                    "example": "user@example.com"
+                  },
+                  "username": {
+                    "type": "string",
+                    "description": "ชื่อผู้ใช้งานที่ต้องการอัปเดต",
+                    "example": "john_doe"
+                  },
+                  "firstname": {
+                    "type": "string",
+                    "description": "ชื่อจริงของผู้ใช้งานที่ต้องการอัปเดต",
+                    "example": "John"
+                  },
+                  "lastname": {
+                    "type": "string",
+                    "description": "นามสกุลของผู้ใช้งานที่ต้องการอัปเดต",
+                    "example": "Doe"
+                  }
+                },
+                "required": ["email", "username", "firstname", "lastname"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "อัปเดตข้อมูลผู้ใช้งานสำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success!"
+                    },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "c0093d36-XXXX-XXXX-XXXX-f20357e9b747"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "user1@example.com"
+                        },
+                        "username": {
+                          "type": "string",
+                          "example": "john_doe"
+                        },
+                        "firstname": {
+                          "type": "string",
+                          "example": "John"
+                        },
+                        "lastname": {
+                          "type": "string",
+                          "example": "Doe"
+                        },
+                        "picture": { "type": "string", "format": "uri", "example": "https://ui-avatars.com/api/?name=John+Doe&background=181C14&color=fff&size=512" },
+                        "createdAt": { "type": "string", "format": "date-time", "example": "2024-11-12T14:12:51.026Z" },
+                        "updatedAt": { "type": "string", "format": "date-time", "example": "2024-11-12T14:12:51.026Z" },
+                        "failedAttempts": { "type": "integer", "example": 0 },
+                        "lockUntil": { "type": "string", "format": "date-time", "nullable": true, "example": null }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ข้อมูลที่ให้มาไม่ถูกต้องหรือไม่ครบถ้วน",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "ไม่สามารถอัปเดตข้อมูลได้เนื่องจากข้อมูลไม่ครบถ้วนหรือไม่ถูกต้อง"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "internal server errors"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
