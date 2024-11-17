@@ -660,6 +660,96 @@
           }
         }
       }
+    },
+    "/api/v1/user/delete/:userId": {
+      "delete": {
+        "tags": ["User"],
+        "summary": "ลบข้อมูลผู้ใช้งาน",
+        "description": "ใช้ลบข้อมูลผู้ใช้งานตาม ID ที่ระบุใน URL",
+        "operationId": "deleteUser",
+        "security": [
+          {
+            "BearerToken": []
+          },
+          {
+            "Cookies": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "ID ของผู้ใช้งานที่ต้องการลบ",
+            "schema": {
+              "type": "string",
+              "example": "c0093d36-XXXX-XXXX-XXXX-f20357e9b747"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ลบข้อมูลผู้ใช้งานสำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "ผู้ใช้งานถูกลบออกจากระบบเรียบร้อยแล้ว"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ข้อผิดพลาดในการลบข้อมูล เช่น ID ไม่ถูกต้อง",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "ไม่สามารถลบผู้ใช้งานได้เนื่องจากข้อมูลไม่ถูกต้อง"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ไม่พบผู้ใช้งานที่ตรงกับ ID ที่ระบุ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "ไม่พบผู้ใช้งานที่ต้องการลบ"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

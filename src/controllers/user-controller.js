@@ -28,6 +28,14 @@ exports.deleteUser = async (req, res, next) => {
                 id,
             }
         })
+
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "none",
+            path: '/',
+        });
+
         res.status(200).json({ code: 200, message: "success!", result: del });
     } catch (err) {
         next(err)
