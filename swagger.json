@@ -11,10 +11,6 @@
       "description": "เซิร์ฟเวอร์หลักของ API"
     },
     {
-      "url": "https://api-crud-todolist.vercel.app/",
-      "description": "เซิร์ฟเวอร์ที่เอาไว้ใช้กับ axios"
-    },
-    {
       "url": "http://localhost:8000/",
       "description": "เซิร์ฟเวอร์ทดสอบในเครื่อง (localhost)"
     }
@@ -336,11 +332,6 @@
             "Cookies": []
           }
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {}
-          }
-        },
           "responses": {
             "200": {
             "description": "Successfully verified the user",
@@ -661,7 +652,7 @@
         }
       }
     },
-    "/api/v1/user/delete/:userId": {
+    "/api/v1/user/delete/{userId}": {
       "delete": {
         "tags": ["User"],
         "summary": "ลบข้อมูลผู้ใช้งาน",
@@ -695,13 +686,29 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 200
+                    },
                     "status": {
                       "type": "string",
-                      "example": "success"
+                      "example": "success!"
                     },
-                    "message": {
-                      "type": "string",
-                      "example": "ผู้ใช้งานถูกลบออกจากระบบเรียบร้อยแล้ว"
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "string", "format": "uuid", "example": "c0093d36-XXXX-XXXX-XXXX-f20357e9b747" },
+                        "email": { "type": "string", "format": "email", "example": "user1@example.com" },
+                        "username": { "type": "string", "example": "username1234" },
+                        "password": { "type": "string", "example": "$2a$10$RfyR1V6y2JHWH2BNXNdh/OfvFrcSq2FAEFw0n.7FcvCqbWC0m7M.K" },
+                        "firstname": { "type": "string", "example": "John" },
+                        "lastname": { "type": "string", "example": "Doe" },
+                        "picture": { "type": "string", "format": "uri", "example": "https://ui-avatars.com/api/?name=John+Doe&background=181C14&color=fff&size=512" },
+                        "createdAt": { "type": "string", "format": "date-time", "example": "2024-11-12T14:12:51.026Z" },
+                        "updatedAt": { "type": "string", "format": "date-time", "example": "2024-11-12T14:12:51.026Z" },
+                        "failedAttempts": { "type": "integer", "example": 0 },
+                        "lockUntil": { "type": "string", "format": "date-time", "nullable": true, "example": null }
+                      }
                     }
                   }
                 }
@@ -728,20 +735,270 @@
               }
             }
           },
-          "404": {
-            "description": "ไม่พบผู้ใช้งานที่ตรงกับ ID ที่ระบุ",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": {
+                    "message": {
                       "type": "string",
-                      "example": "error"
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "internal server errors"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/todo/view": {
+      "get": {
+        "tags": ["Todo"],
+        "summary": "ดูทั้งหมด",
+        "description": "Retrieve the user's profile and their associated todos.",
+        "parameters": [],
+        "security": [
+          {
+            "BearerToken": []
+          },
+          {
+            "Cookies": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response containing user details and a list of todos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
                     },
                     "message": {
                       "type": "string",
-                      "example": "ไม่พบผู้ใช้งานที่ต้องการลบ"
+                      "example": "success!"
+                    },
+                    "user_req": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "74a9f503-e59b-4ff1-a79e-0dc543c5c778"
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email",
+                          "example": "iinter731@gmail.com"
+                        },
+                        "username": {
+                          "type": "string",
+                          "example": "donut1140"
+                        },
+                        "firstname": {
+                          "type": "string",
+                          "example": "nuttawoot"
+                        },
+                        "lastname": {
+                          "type": "string",
+                          "example": "chawna"
+                        },
+                        "picture": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://ui-avatars.com/api/?name=nuttawoot+chawna&background=181C14&color=fff&size=512"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-11-17T14:36:02.555Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-11-18T13:35:50.703Z"
+                        },
+                        "failedAttempts": {
+                          "type": "integer",
+                          "example": 0
+                        },
+                        "lockUntil": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true,
+                          "example": null
+                        }
+                      }
+                    },
+                    "result": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "18a29fb7-a1e6-4396-9867-48cd9b4289ba"
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "ทดสอบการทำงาน"
+                          },
+                          "description": {
+                            "type": "string",
+                            "example": "ไม่รู้จะพิมพ์ไรเลยลองทดสอบดู"
+                          },
+                          "completed": {
+                            "type": "boolean",
+                            "example": false
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2024-11-17T14:58:28.755Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2024-11-17T14:58:28.755Z"
+                          },
+                          "user_id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "74a9f503-e59b-4ff1-a79e-0dc543c5c778"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request response when data is not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 400
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "ไม่พบข้อมูล!"
+                    },
+                    "user_req": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "74a9f503-e59b-4ff1-a79e-0dc543c5c778"
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email",
+                          "example": "iinter731@gmail.com"
+                        },
+                        "username": {
+                          "type": "string",
+                          "example": "donut1140"
+                        },
+                        "firstname": {
+                          "type": "string",
+                          "example": "nuttawoot"
+                        },
+                        "lastname": {
+                          "type": "string",
+                          "example": "chawna"
+                        },
+                        "picture": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://ui-avatars.com/api/?name=nuttawoot+chawna&background=181C14&color=fff&size=512"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-11-17T14:36:02.555Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-11-18T13:35:50.703Z"
+                        },
+                        "failedAttempts": {
+                          "type": "integer",
+                          "example": 0
+                        },
+                        "lockUntil": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true,
+                          "example": null
+                        }
+                      }
+                    },
+                    "result": {
+                      "type": "array",
+                      "example": []
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "internal server errors"
                     }
                   }
                 }

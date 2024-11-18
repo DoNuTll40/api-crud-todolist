@@ -20,7 +20,7 @@ exports.authentication = async (req, res, next) => {
             }
         }
 
-        console.log("Cookie Token : "+ (req.cookies.token).slice(0, 36) + "...")
+        console.log("Cookie Token : "+ (req.cookies.token)?.slice(0, 36) + "...")
         // 2. หากไม่พบ token ใน header ให้ตรวจสอบจาก cookie
         if (!token && req.cookies && req.cookies.token) {
             token = req.cookies.token;

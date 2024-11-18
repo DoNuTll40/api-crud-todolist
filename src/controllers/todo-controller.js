@@ -51,3 +51,57 @@ exports.createTodo = async (req, res, next) => {
         next(err)
     }
 }
+
+exports.updateTodo = async (req, res, next) => {
+    try {  
+        const id = req.params.todoId;
+        const value = await todoValidator.validUpdateTodo.validateAsync(req.body);
+
+        const checkId = await prisma.todo.findFirst({
+            where: {
+                id
+            }
+        })
+
+        if(checkId){
+            return res.status(400).json({ code: 400, message: "ไม่พบ ID ของ todo ในระบบ" })
+        }
+
+        const updateTodo = await prisma.todo.update({
+            where: {
+                id,
+            },
+            data: {
+                ...value,
+            }
+        })
+        res.json({ code: 200, message: "success!", result: updateTodo })
+    } catch (err) {
+        next(err)
+    }
+}
+
+exports.deleteTodo = async (req, res, next) => {
+    try {
+        const id = req.params.todoId;
+
+        const checkId = await prisma.todo.findFirst({
+            where: {
+                id
+            }
+        })
+
+        if(checkId){
+            return res.status(400).json({ code: 400, message: "ไม่พบ ID ของ todo ในระบบ" })
+        }
+
+        const del = await prisma.todo.delete({
+            where: {
+                id,
+            }
+        })
+        res.json({ code: 200, message: "success!", result: del })
+    } catch (err) {
+        next(err)
+    }
+}
