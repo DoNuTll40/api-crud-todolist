@@ -21,6 +21,7 @@ exports.validCreateTodo = Joi.object({
   
     completed: Joi.boolean()
       .default(false)
+      .optional()
       .messages({
         'boolean.base': 'Completed ต้องเป็นค่า boolean'
       }),

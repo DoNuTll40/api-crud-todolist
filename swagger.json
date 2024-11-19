@@ -16,9 +16,22 @@
     }
   ],
   "tags": [
-    { "name": "Auth", "description": "Authenticate Endpoints : เพื่อให้สามารถเข้าถึงข้อมูลหรือฟังก์ชันต่างๆ ในแอปพลิเคชันได้ โดยระบบจะใช้การยืนยันตัวตนผ่าน username และ password หรือ token (เช่น JWT) เพื่อสร้างการเข้าถึงที่ปลอดภัยและจำกัดสิทธิ์การใช้งานของผู้ใช้" },
-    { "name": "User", "description": "User endpoints" },
-    { "name": "Todo", "description": "Todo endpoints" }
+    { 
+      "name": "Auth", 
+      "description": "Endpoints สำหรับการยืนยันตัวตนและการจัดการสิทธิ์การเข้าถึงข้อมูลในแอปพลิเคชัน เช่น การเข้าสู่ระบบ (Login) และการออกจากระบบ (Logout) โดยใช้ username, password หรือ token (เช่น JWT) เพื่อสร้างการเข้าถึงที่ปลอดภัยและจำกัดสิทธิ์การใช้งานของผู้ใช้"
+    },
+    { 
+      "name": "User", 
+      "description": "Endpoints สำหรับจัดการข้อมูลผู้ใช้ เช่น การสร้างบัญชีผู้ใช้ (Registration), การอัปเดตข้อมูลส่วนตัว, และการลบผู้ใช้"
+    },
+    { 
+      "name": "Todo", 
+      "description": "Endpoints สำหรับจัดการรายการสิ่งที่ต้องทำ (Todo) เช่น การเพิ่ม (Create), อ่าน (Read), อัปเดต (Update), และลบ (Delete) รายการ"
+    },
+    { 
+      "name": "Limit", 
+      "description": "Endpoints สำหรับการควบคุมขีดจำกัดจำนวนข้อมูลที่สามารถดึงออกมาในแต่ละคำขอ เช่น การจำกัดจำนวน limit ในการควบคุมจำนวนข้อมูล"
+    }
   ],
   "components": {
     "schemas": {
@@ -539,9 +552,10 @@
                     "type": "string",
                     "description": "นามสกุลของผู้ใช้งานที่ต้องการอัปเดต",
                     "example": "Doe"
-                  }
+                  },
+                  "picture": { "type": "string", "format": "uri", "example": "https://ui-avatars.com/api/?name=John+Doe&background=181C14&color=fff&size=512", "description": "เป็นลิ้งค์ที่ได้จาก UI Avatar โดยใช้ชื่อมาทำเป็นภาพ" }
                 },
-                "required": ["email", "username", "firstname", "lastname"]
+                "required": ["email", "username", "firstname", "lastname", "picture"]
               }
             }
           }
@@ -999,6 +1013,493 @@
                     "message": {
                       "type": "string",
                       "example": "internal server errors"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/todo/create": {
+      "post": {
+        "summary": "เพิ่มสิ่งที่ต้องทำ",
+        "tags": ["Todo"],
+        "description": "ใช้สำหรับเพิ่มรายการสิ่งที่ต้องทำ (Todo)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "ชื่อสิ่งที่ต้องทำ",
+                    "example": "ซื้อของเข้าบ้าน"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "รายละเอียดของสิ่งที่ต้องทำ (ถ้ามี)",
+                    "example": "รายการซื้อของ: ข้าว, น้ำตาล, ไข่"
+                  }
+                },
+                "required": ["title"]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerToken": []
+          },
+          {
+            "Cookies": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "รายการสิ่งที่ต้องทำถูกสร้างสำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success!"
+                    },
+                    "todo": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "1as29fb7-a1e6-7842-0642-21cd9b4289ba"
+                        },
+                        "title": {
+                          "type": "string",
+                          "example": "ซื้อของเข้าบ้าน"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "รายการซื้อของ: ข้าว, น้ำตาล, ไข่"
+                        },
+                        "completed": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2024-11-17T14:58:28.755Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2024-11-17T14:58:28.755Z"
+                        },
+                        "user_id": {
+                          "type": "string",
+                          "example": "74a9f503-e59b-4ff1-a79e-0dc543c5c778"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ข้อมูลไม่ถูกต้อง",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Title ต้องไม่เป็นค่าว่าง"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "internal server errors"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/todo/update/{todoId}": {
+      "patch": {
+        "tags": ["Todo"],
+        "summary": "อัปเดตสิ่งที่ต้องทำ",
+        "description": "ใช้สำหรับอัปเดตรายการสิ่งที่ต้องทำ (Todo)",
+        "security": [
+          {
+            "BearerToken":[]
+          },{
+            "Cookies": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "todoId",
+            "in": "path",
+            "required": true,
+            "description": "รหัสของสิ่งที่ต้องทำที่ต้องการอัปเดต",
+            "schema": {
+              "type": "string",
+              "example": "1as29fb7-a1e6-7842-0642-21cd9b4289ba"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "ชื่อสิ่งที่ต้องทำ",
+                    "example": "อัปเดตชื่อสิ่งที่ต้องทำ"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "รายละเอียดของสิ่งที่ต้องทำ (ถ้ามี)",
+                    "example": "อัปเดตรายละเอียด"
+                  },
+                  "completed": {
+                    "type": "boolean",
+                    "description": "สถานะการทำงานสำเร็จหรือไม่",
+                    "example": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "รายการสิ่งที่ต้องทำถูกอัปเดตสำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success!"
+                    },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "1as29fb7-a1e6-7842-0642-21cd9b4289ba"
+                        },
+                        "title": {
+                          "type": "string",
+                          "example": "อัปเดตชื่อสิ่งที่ต้องทำ"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "รายละเอียดของสิ่งที่ต้องทำ (ถ้ามี)"
+                        },
+                        "completed": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2024-11-17T14:58:28.755Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2024-11-17T14:58:28.755Z"
+                        },
+                        "user_id": {
+                          "type": "string",
+                          "example": "74a9f503-e59b-4ff1-a79e-0dc543c5c778"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ข้อมูลไม่ถูกต้อง",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Title ต้องไม่เป็นค่าว่าง"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Internal server error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/todo/delete/{todoId}": {
+      "delete": {
+        "tags": ["Todo"],
+        "summary": "ลบสิ่งที่ต้องการทำ",
+        "description": "ใช้สำหรับลบรายการหรือสิ่งที่ต้องทำ (Todo)",
+        "security": [
+          {
+            "BearerToken":[]
+          },{
+            "Cookies": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "todoId",
+            "in": "path",
+            "required": true,
+            "description": "รหัสของสิ่งที่ต้องทำที่ต้องการลบข้อมูล",
+            "schema": {
+              "type": "string",
+              "example": "1as29fb7-a1e6-7842-0642-21cd9b4289ba"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "รายการสิ่งที่ต้องทำถูกอัปเดตสำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success!"
+                    },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "1as29fb7-a1e6-7842-0642-21cd9b4289ba"
+                        },
+                        "title": {
+                          "type": "string",
+                          "example": "อัปเดตชื่อสิ่งที่ต้องทำ"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "รายละเอียดของสิ่งที่ต้องทำ (ถ้ามี)"
+                        },
+                        "completed": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2024-11-17T14:58:28.755Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2024-11-17T14:58:28.755Z"
+                        },
+                        "user_id": {
+                          "type": "string",
+                          "example": "74a9f503-e59b-4ff1-a79e-0dc543c5c778"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ไม่พบข้อมูล",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 400
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "ไม่พบ ID ของ todo ในระบบ"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Internal server error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/limit": {
+      "get": {
+        "tags": ["Limit"],
+        "summary": "ดูจำนวนการร้องขอ API",
+        "description": "แสดงข้อมูลเกี่ยวกับจำนวนการร้องขอ API ที่เหลืออยู่ และเวลาที่จะรีเซ็ตราคาคำขอใหม่",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "ipAddress": {
+                      "type": "string",
+                      "example": "XXX.XXX.XXX.XXX"
+                    },
+                    "limit": {
+                      "type": "string",
+                      "example": "1000"
+                    },
+                    "limitCount": {
+                      "type": "integer",
+                      "example": 999
+                    },
+                    "reset": {
+                      "type": "string",
+                      "example": "11/19/2024, 2:03:03 PM"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429":{
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "คุณได้ทำการเรียกคำขอเกินขีดจำกัดที่กำหนดไว้ กรุณาลองใหม่อีกครั้งหลังจากผ่านไป 1 นาที"
                     }
                   }
                 }
