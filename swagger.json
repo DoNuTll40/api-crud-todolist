@@ -11,6 +11,10 @@
       "description": "เซิร์ฟเวอร์หลักของ API"
     },
     {
+      "url": "https://api-todolist-beta.vercel.app/",
+      "description": "ลิ้งค์สำรองของ API"
+    },
+    {
       "url": "http://localhost:8000/",
       "description": "เซิร์ฟเวอร์ทดสอบในเครื่อง (localhost)"
     }
