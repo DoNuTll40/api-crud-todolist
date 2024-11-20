@@ -50,7 +50,7 @@ api.get(
   apiReference({
     theme: 'deepSpace',
     spec: {
-      url: '/swagger.json',
+      url: '/api/v1/swagger',
     },
     headers: {
       'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -60,7 +60,7 @@ api.get(
   })
 );
 
-api.get('/swagger.json', (req, res) => {
+api.get('/api/v1/swagger', (req, res) => {
   res.sendFile(__dirname + '/swagger.json');
 });
 
