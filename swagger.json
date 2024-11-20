@@ -1319,6 +1319,157 @@
         }
       }
     },
+    "/api/v1/todo/update/status/{todoId}": {
+      "patch": {
+        "tags": ["Todo"],
+        "summary": "อัปเดตสถานะของรายการ",
+        "description": "API สำหรับอัปเดตสถานะของสิ่งที่ต้องทำ (Todo) ว่าเสร็จสิ้นหรือยัง",
+        "security": [
+          {
+            "BearerToken":[]
+          },{
+            "Cookies": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "todoId",
+            "in": "path",
+            "required": true,
+            "description": "รหัสเฉพาะของรายการ Todo ที่ต้องการอัปเดต",
+            "schema": {
+              "type": "string",
+              "example": "18a29fb7-a1e6-4396-9867-48cd9b4289ba"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "completed": {
+                    "type": "boolean",
+                    "description": "สถานะของรายการ Todo (true = สำเร็จ, false = ยังไม่สำเร็จ)",
+                    "example": false
+                  }
+                },
+                "description": "ข้อมูลที่ใช้ในการอัปเดตสถานะของรายการ Todo"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "อัปเดตสถานะสำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success!"
+                    },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "18a29fb7-a1e6-4396-9867-48cd9b4289ba"
+                        },
+                        "title": {
+                          "type": "string",
+                          "example": "ทดสอบการทำงาน"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "ไม่รู้จะพิมพ์ไรเลยลองทด"
+                        },
+                        "completed": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2024-11-17T14:58:28.755Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2024-11-20T03:50:00.457Z"
+                        },
+                        "user_id": {
+                          "type": "string",
+                          "example": "74a9f503-e59b-4ff1-a79e-0dc543c5c778"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ข้อมูลไม่ถูกต้อง",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 400
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "ไม่พบ ID ของ todo ในระบบ"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Internal server error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/todo/delete/{todoId}": {
       "delete": {
         "tags": ["Todo"],

@@ -50,3 +50,21 @@ exports.validUpdateTodo = Joi.object({
         'boolean.base': 'Completed ต้องเป็นค่า boolean'
       }),
 });
+
+exports.updateTodoStatus = Joi.object({
+  todoId: Joi.string()
+    .uuid()
+    .required()
+    .messages({
+      'string.base': 'todoId ต้องเป็นข้อความ',
+      'string.empty': 'todoId ห้ามเป็นค่าว่าง',
+      'string.uuid': 'todoId ต้องอยู่ในรูปแบบ UUID',
+      'any.required': 'ต้องระบุค่า todoId',
+    }),
+  completed: Joi.boolean()
+    .required()
+    .messages({
+      'boolean.base': 'completed ต้องเป็นค่า boolean เท่านั้น',
+      'any.required': 'ต้องระบุค่า completed',
+    }),
+});

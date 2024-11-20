@@ -63,7 +63,7 @@ exports.updateTodo = async (req, res, next) => {
             }
         })
 
-        if(checkId){
+        if(!checkId){
             return res.status(400).json({ code: 400, message: "ไม่พบ ID ของ todo ในระบบ" })
         }
 
@@ -73,9 +73,46 @@ exports.updateTodo = async (req, res, next) => {
             },
             data: {
                 ...value,
+                updatedAt: new Date().toISOString()
             }
         })
         res.json({ code: 200, message: "success!", result: updateTodo })
+    } catch (err) {
+        next(err)
+    }
+}
+
+exports.upStatusTodo = async (req, res, next) => {
+    try {
+        const todoId = req.params.todoId;
+        const completed = req.body.completed
+
+        console.log(completed)
+
+        const value = await todoValidator.updateTodoStatus.validateAsync({ todoId, completed })
+
+        const checkId = await prisma.todo.findFirst({
+            where: {
+                id: value.todoId,
+            }
+        })
+
+        if(!checkId){
+            return res.status(400).json({code: 400, message: "ไม่พบ ID ของ todo ในระบบ"})
+        }
+
+        const upStatus = await prisma.todo.update({
+            where: {
+                id: value.todoId,
+            },
+            data: {
+                ...checkId,
+                completed: value.completed,
+                updatedAt: new Date().toISOString()
+            }
+        })
+
+        res.json({ code: 200, message: "success!", result: upStatus })
     } catch (err) {
         next(err)
     }
