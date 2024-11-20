@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "ToDo List API Documentation",
-    "version": "1.0.0",
+    "version": "0.9.8",
     "description": "เอกสาร API สำหรับการจัดการ ToDo List แอปพลิเคชันที่ช่วยในการจัดระเบียบงานและติดตามงานที่ต้องทำ สามารถเพิ่ม, แก้ไข, ลบ และเรียกดูรายการงานได้"
   },
   "servers": [

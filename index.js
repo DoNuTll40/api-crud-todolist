@@ -73,7 +73,7 @@ function allRoutes() {
   router.get("/limit", limiter, (req, res) => {
     const limitCount = req.rateLimit.remaining;
     const limit = req.rateLimit.limit;
-    const reset = new Date(req.rateLimit.resetTime).toLocaleString();
+    const reset = new Date(req.rateLimit.resetTime).toLocaleString('th-TH');
     const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     return res.json({ success: true , ipAddress, limit, limitCount, reset });
   })
